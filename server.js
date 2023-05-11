@@ -23,7 +23,14 @@ const connectToMongo = async () => {
 connectToMongo();
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+    methods: ["GET", "POST"],
+  })
+);
+
 app.use(express.json());
 
 const server = app.listen(5000, () => console.log(`Server started on 5000`));
