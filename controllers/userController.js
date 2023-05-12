@@ -113,6 +113,7 @@ module.exports.getAllUsers = async (req, res, next) => {
       "avatarImage",
       "_id",
     ]);
+    res.set("Access-Control-Allow-Origin", "*");
     return res.json({ users });
   } catch (ex) {
     next(ex);
