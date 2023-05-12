@@ -25,7 +25,7 @@ connectToMongo();
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://ichat-67235e.netlify.app",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
