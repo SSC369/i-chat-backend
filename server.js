@@ -33,11 +33,17 @@ app.use(
 );
 
 app.use(express.json());
+const allowCrossDomain = (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+};
 
 const server = app.listen(5000, () => console.log(`Server started on 5000`));
 
-app.use("/api/auth", authRoutes);
-app.use("/api/messages", messageRoutes);
+app.use("/api/auth", allowCrossDomain, authRoutes);
+app.use("/api/messages",allowCrossDomain, messageRoutes);
 
 app.use("/", (req, res) => {
   res.send("Hi SSC");
