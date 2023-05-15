@@ -104,7 +104,6 @@ module.exports.getAllUsers = async (req, res, next) => {
       "avatarImage",
       "_id",
     ]);
-    res.set("Access-Control-Allow-Origin", "*");
     return res.json({ users });
   } catch (ex) {
     next(ex);
@@ -113,11 +112,11 @@ module.exports.getAllUsers = async (req, res, next) => {
 
 module.exports.logOut = (req, res, next) => {
   try {
-    if (!req.params.id)
-      return res.json({ msg: "User id is required", status: false });
     onlineUsers.delete(req.params.id);
-    return res.status(200).json("Logged out successfully");
+    return res
+      .status(200)
+      .json({ msg: "Logged out successfully", status: true });
   } catch (ex) {
-    next(ex);
+    return res.json({ msg: "Something went wrong", status: false });
   }
 };
