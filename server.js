@@ -23,27 +23,26 @@ const connectToMongo = async () => {
 connectToMongo();
 
 const app = express();
-app.use(
-  cors({
-    origin: "https://ichat-67235e.netlify.app",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
+app.use(cors());
 app.use(express.json());
-const allowCrossDomain = (req, res, next) => {
+
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,OPTIONS,PUT,POST,DELETE"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, Accept, Authorization, X-Requested-With, Content-Type"
+  );
   next();
-};
+});
 
 const server = app.listen(5000, () => console.log(`Server started on 5000`));
 
-app.use("/api/auth", allowCrossDomain, authRoutes);
-app.use("/api/messages",allowCrossDomain, messageRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
 
 app.use("/", (req, res) => {
   res.send("Hi SSC");
