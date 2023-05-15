@@ -1,6 +1,5 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 module.exports.register = async (req, res, next) => {
   try {
@@ -20,6 +19,7 @@ module.exports.register = async (req, res, next) => {
 
     //create hashed pass
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = await User.create({
       email,
       username,
@@ -29,17 +29,13 @@ module.exports.register = async (req, res, next) => {
     const userDetails = {
       username: user.username,
       _id: user._id,
+      avatarImage: user.avatarImage,
     };
 
-    const secretKey = "SSC";
-    const payload = {
-      userDetails,
-    };
-    const jwtToken = await jwt.sign(payload, secretKey);
-
-    return res.json({ status: true, jwtToken, userDetails });
+    return res.json({ status: true, userDetails });
   } catch (error) {
-    next(error);
+    res.status(500).json("Invalid Credentials");
+    next();
   }
 };
 
@@ -57,15 +53,10 @@ module.exports.login = async (req, res, next) => {
     const userDetails = {
       username: user.username,
       _id: user._id,
+      avatarImage: user.avatarImage,
     };
 
-    const secretKey = "SSC";
-    const payload = {
-      userDetails,
-    };
-    const jwtToken = await jwt.sign(payload, secretKey);
-
-    return res.json({ status: true, jwtToken, userDetails });
+    return res.json({ status: true, userDetails });
   } catch (ex) {
     next(ex);
   }
@@ -81,7 +72,7 @@ module.exports.setAvatar = async (req, res, next) => {
         isAvatarImageSet: true,
         avatarImage,
       },
-      { new: true }
+      { new: false }
     );
     return res.json({
       isSet: userData.isAvatarImageSet,
@@ -122,9 +113,10 @@ module.exports.getAllUsers = async (req, res, next) => {
 
 module.exports.logOut = (req, res, next) => {
   try {
-    if (!req.params.id) return res.json({ msg: "User id is required " });
+    if (!req.params.id)
+      return res.json({ msg: "User id is required", status: false });
     onlineUsers.delete(req.params.id);
-    return res.status(200).send();
+    return res.status(200).json("Logged out successfully");
   } catch (ex) {
     next(ex);
   }
