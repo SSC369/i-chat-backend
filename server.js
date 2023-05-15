@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
   console.log(socket.id);
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id);
-    console.log(onlineUsers);
+
   });
 
   socket.on("send-msg", (data) => {
